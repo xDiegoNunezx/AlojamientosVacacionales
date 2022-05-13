@@ -25,3 +25,8 @@ CREATE TABLE personal(
     CONSTRAINT personal_fk FOREIGN KEY (clvAlo) 
     REFERENCES alojamiento (clvAlo) ON DELETE CASCADE
 );
+
+--Tabla Huesped
+CREATE TABLE Huesped(
+    
+)

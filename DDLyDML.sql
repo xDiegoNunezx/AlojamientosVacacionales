@@ -106,6 +106,14 @@ CREATE TABLE Alojamiento(
     CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
 );
 
+-- Tabla tipoHabitacion
+CREATE TABLE tipoHabitacion (
+    tipoHab VARCHAR(15),
+    precioHab NUMBER(8,2) NOT NULL,
+    CONSTRAINT PK_tipoHabitacion PRIMARY KEY (tipoHab),
+    CONSTRAINT CK_tipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE'))
+);
+
 --Tabla Habitación Dani
 
 CREATE TABLE Habitacion(
@@ -113,10 +121,9 @@ CREATE TABLE Habitacion(
     clvAlo CHAR(4) NOT NULL,
     tipoHab VARCHAR(15) NOT NULL,
     estatusHab VARCHAR(15) NOT NULL,
-    precioHab NUMBER(8,2) NOT NULL,
     CONSTRAINT PK_Habitacion PRIMARY KEY (noHab,clvAlo),
+    CONSTRAINT FK_Habitacion_TipoHabitacion FOREIGN KEY (tipoHab) REFERENCES tipoHabitacion,
     CONSTRAINT FK_Habitacion_Alojamiento FOREIGN KEY (clvAlo) REFERENCES alojamiento ON DELETE CASCADE,
-    CONSTRAINT CK_Habitacion_TipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE')),
     CONSTRAINT CK_Habitacion_EstatusHab CHECK (estatusHab IN ('DISPONIBLE','OCUPADO'))
 );
 
@@ -127,6 +134,22 @@ CREATE TABLE Actividad(
     nivelAct VARCHAR(10) NOT NULL,
     CONSTRAINT PK_Actividad PRIMARY KEY (clvAct),
     CONSTRAINT CK_NivelAct CHECK (nivelAct IN ('ALTO','MEDIO','BAJO'))
+);
+
+--Tabla ALOJAACT
+CREATE TABLE AlojaAct(
+	clvAlo CHAR(4),
+	clvAct CHAR(4), 
+	fechaActividad VARCHAR2(20) NOT NULL,
+	horario VARCHAR2(10) NOT NULL,
+
+	CONSTRAINT pkAlojaAct PRIMARY KEY(clvAlo, clvAct),
+	CONSTRAINT fkAlojaActAlojamiento FOREIGN KEY(clvAlo)
+	REFERENCES alojamiento(clvAlo) ON DELETE CASCADE,
+	CONSTRAINT fkAlojaActActividad FOREIGN KEY(clvAct)
+	REFERENCES actividad(clvAct) ON SET NULL
+	CONSTRAINT ckAlojaAct CHECK(fechaActividad IN ('Martes',
+	'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'))
 );
 
 --Tabla Reserva Aldo
@@ -140,12 +163,4 @@ CREATE TABLE Reserva(
     CONSTRAINT FK_Reserva_Alojamiento FOREIGN KEY (clvAlo) REFERENCES alojamiento,
     CONSTRAINT FK_Reserva_Huesped FOREIGN KEY (claveHuesped) REFERENCES Huesped ON DELETE SET NULL,
     CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab) REFERENCES Habitacion
-);
-
--- Tabla tipoHabitacion
-CREATE TABLE tipoHabitacion (
-    tipoHab VARCHAR(15),
-    precioHab NUMBER(8,2) NOT NULL,
-    CONSTRAINT PK_tipoHabitacion PRIMARY KEY (tipoHab),
-    CONSTRAINT CK_tipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE'))
 );

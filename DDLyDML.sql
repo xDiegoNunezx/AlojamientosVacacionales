@@ -103,7 +103,7 @@ CREATE TABLE Alojamiento(
     telAlo NUMBER(10) NOT NULL,
     clavePersonal CHAR(4) NOT NULL,
     CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
-    CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE CASCADE
+    CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
 );
 
 --Tabla Habitación Dani
@@ -118,6 +118,15 @@ CREATE TABLE Habitacion(
     CONSTRAINT FK_Habitacion_Alojamiento FOREIGN KEY (clvAlo) REFERENCES alojamiento ON DELETE CASCADE,
     CONSTRAINT CK_Habitacion_TipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE')),
     CONSTRAINT CK_Habitacion_EstatusHab CHECK (estatusHab IN ('DISPONIBLE','OCUPADO'))
+);
+
+CREATE TABLE Actividad(
+    clvAct CHAR(4) NOT NULL,
+    nomAct VARCHAR(30) NOT NULL,
+    descAct VARCHAR(150) NOT NULL,
+    nivelAct VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Actividad PRIMARY KEY (clvAct),
+    CONSTRAINT CK_NivelAct CHECK (nivelAct IN ('ALTO','MEDIO','BAJO'))
 );
 
 --Tabla Reserva Aldo

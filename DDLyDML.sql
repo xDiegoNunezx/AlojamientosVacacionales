@@ -93,8 +93,19 @@ insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues
 
 --Tabla Alojamiento
 
---Tabla Habitación
+--Tabla Habitación Dani
 
+CREATE TABLE Habitacion(
+    noHab CHAR(4) NOT NULL,
+    clvAlo CHAR(4) NOT NULL,
+    tipoHab VARCHAR(15) NOT NULL,
+    estatusHab VARCHAR(15) NOT NULL,
+    precioHab NUMBER(8,2) NOT NULL,
+    CONSTRAINT PK_Habitacion PRIMARY KEY (noHab,clvAlo),
+    CONSTRAINT FK_Habitacion_Alojamiento FOREIGN KEY (clvAlo) REFERENCES alojamiento ON DELETE CASCADE,
+    CONSTRAINT CK_Habitacion_TipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE')),
+    CONSTRAINT CK_Habitacion_EstatusHab CHECK (estatusHab IN ('DISPONIBLE','OCUPADO'))
+);
 
 --Tabla Reserva Aldo
 CREATE TABLE Reserva(

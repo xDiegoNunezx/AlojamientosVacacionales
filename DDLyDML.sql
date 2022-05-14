@@ -141,3 +141,11 @@ CREATE TABLE Reserva(
     CONSTRAINT FK_Reserva_Huesped FOREIGN KEY (claveHuesped) REFERENCES Huesped ON DELETE SET NULL,
     CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab) REFERENCES Habitacion
 )
+
+-- Tabla tipoHabitacion
+CREATE TABLE tipoHabitacion (
+    tipoHab VARCHAR(15),
+    precioHab NUMBER(8,2) NOT NULL,
+    CONSTRAINT PK_tipoHabitacion PRIMARY KEY (tipoHab),
+    CONSTRAINT CK_tipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE'))
+)

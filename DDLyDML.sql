@@ -91,7 +91,20 @@ insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('x551', 'Oneida', 'Glentworth', '78 Homewood Alley', 51001, 'China', '9277560167');
 
 
---Tabla Alojamiento
+--Tabla Alojamiento Dani
+
+CREATE TABLE Alojamiento(
+    clvAlo CHAR(4) NOT NULL,
+    nomAlo VARCHAR(30) NOT NULL,
+    calleAlo VARCHAR(30) NOT NULL,
+    CPAlo NUMBER(4) NOT NULL,
+    paisAlo VARCHAR(20) NOT NULL,
+    cantidadHab NUMBER(2) NOT NULL,
+    telAlo NUMBER(10) NOT NULL,
+    clavePersonal CHAR(4) NOT NULL,
+    CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
+    CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE CASCADE
+);
 
 --Tabla Habitación Dani
 

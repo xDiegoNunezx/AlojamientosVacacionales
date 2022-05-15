@@ -19,27 +19,30 @@ CREATE TABLE personal(
     paisPer VARCHAR2(20) NOT NULL,
     fechaIngreso DATE DEFAULT SYSDATE,
     RFCPer CHAR(13) NOT NULL,
-    clvAlo CHAR(4) NOT NULL,
+    clvAlo CHAR(4),
     CONSTRAINT personal_pk PRIMARY KEY (clavePersonal)
 );
 
 --Tabla Alojamiento Dani
 
 CREATE TABLE Alojamiento(
-    clvAlo CHAR(4) NOT NULL,
+    clvAlo CHAR(4),
     nomAlo VARCHAR(30) NOT NULL,
     calleAlo VARCHAR(30) NOT NULL,
-    CPAlo NUMBER(4) NOT NULL,
+    CPAlo NUMBER(5) NOT NULL,
     paisAlo VARCHAR(20) NOT NULL,
     cantidadHab NUMBER(2) NOT NULL,
     telAlo NUMBER(10) NOT NULL,
-    clavePersonal CHAR(4) NOT NULL,
+    clavePersonal CHAR(4),
     CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
     CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
 );
 
 ALTER TABLE personal
 ADD CONSTRAINT personal_fk FOREIGN KEY (clvAlo) REFERENCES alojamiento;
+
+ALTER TABLE personal
+DROP CONSTRAINT personal_fk;
 
 --Tabla Huesped Aldo
 CREATE TABLE Huesped(
@@ -53,6 +56,12 @@ CREATE TABLE Huesped(
     telHues NUMBER(10) NOT NULL,
     CONSTRAINT PK_Huesped PRIMARY KEY (claveHuesped)
 );
+
+-- Inserciones Tabla Personal
+
+
+
+-- Inserciones Tabla Huesped
 
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('x998', 'Loren', 'Pidcock', '8564 Fremont Alley', 77163, 'China', '4202764245');
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('o352', 'Teddy', 'Sandham', '2 Melvin Circle', 34773, 'Russia', '2181887567');
@@ -106,6 +115,7 @@ insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('x551', 'Oneida', 'Glentworth', '78 Homewood Alley', 51001, 'China', '9277560167');
 
 -- Tabla tipoHabitacion
+
 CREATE TABLE tipoHabitacion (
     tipoHab VARCHAR(15),
     precioHab NUMBER(8,2) NOT NULL,

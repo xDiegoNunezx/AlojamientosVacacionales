@@ -58,6 +58,15 @@ END spCambioPrecioHab;
     qué día de la semana.
 */
 
+CREATE OR REPLACE VIEW vwActividadAlojamiento
+AS
+	SELECT clvAlo, nomAlo, nomAct, fechaActividad
+	FROM alojamiento
+	NATURAL JOIN alojaAct
+	NATURAL JOIN actividad
+	ORDER BY clvAlo
+;
+
 
 /*
     Calcular las vacaciones del personal para un año determinado 
@@ -111,7 +120,35 @@ END spVacaciones;
     huéspedes y los alojamientos.
 */
 
+CREATE TABLE reporteReservaciones(
+	noHabReporte CHAR(4) NOT NULL,
+	clvAloReporte CHAR(4) NOT NULL,
+	claveHuespedReporte CHAR(4) NOT NULL,
+	nomHuesReporte VARCHAR2(30) NOT NULL,
+	nomAloReporte VARCHAR(30) NOT NULL,
+	inicioReservaReporte DATE
+);
 
+CREATE OR REPLACE TRIGGER tgRegistraReserva
+AFTER
+	INSERT 
+	ON reserva
+	FOR EACH ROW
+DECLARE
+	vnomHues VARCHAR2(30);
+	vnomAlo VARCHAR(30);
+BEGIN
+	SELECT nomHues, nomAlo
+	INTO vnomHues, vnomAlo
+	FROM reserva
+	NATURAL JOIN huesped
+	NATURAL JOIN alojamiento;
+
+	INSERT INTO reporteReservaciones
+	VALUES (:NEW.noHab, :NEW.clvAlo, :NEW.claveHuesped, vnomHues, 
+	vnomAlo, :NEW.inicioReserva);
+END tgRegistraReserva;
+/
 
 /*
     En el momento en que una reservación es cancelada el estatus de la 

@@ -39,7 +39,9 @@ CREATE TABLE Alojamiento(
 );
 
 ALTER TABLE personal
-ADD CONSTRAINT personal_fk FOREIGN KEY (clvAlo) REFERENCES alojamiento;
+ADD CONSTRAINT personal_fk 
+FOREIGN KEY (clvAlo) 
+REFERENCES alojamiento;
 
 ALTER TABLE personal
 DROP CONSTRAINT personal_fk;

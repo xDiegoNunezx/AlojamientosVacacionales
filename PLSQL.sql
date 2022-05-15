@@ -131,3 +131,26 @@ BEGIN
     AND clvAlo = :OLD.clvAlo;
 END tgReservacionCancelada;
 /
+
+-- Dar de alta cliente
+
+CREATE OR REPLACE PROCEDURE spAltaPersonal(
+   
+)
+
+-- Dar alta alojamiento
+
+
+CREATE OR REPLACE PROCEDURE spAltaAlojamiento(
+   nomAlo IN VARCHAR,
+   calleAlo IN VARCHAR,
+   CPAlo IN NUMBER,
+   paisAlo IN VARCHAR,
+   cantidadHab IN NUMBER,
+   telAlo IN NUMBER
+)
+AS
+BEGIN
+   INSERT INTO Alojamiento(clvAlo,nomAlo,calleAlo,CPAlo,paisAlo,cantidadHab,telAlo) VALUES (ID_ALO_SEQ.NEXT_VAL,nomAlo,calleAlo,CPAlo,paisAlo,cantidadHab,telAlo);
+END spAltaAlojamiento;
+/

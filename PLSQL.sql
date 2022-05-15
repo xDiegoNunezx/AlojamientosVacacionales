@@ -115,3 +115,19 @@ END spVacaciones;
     En el momento en que una reservación es cancelada el estatus de la 
     habitación debe de regresar a su estado original.
 */
+CREATE OR REPLACE VIEW vwReserva
+AS
+SELECT noHab, nomHues, inicioReserva, finReserva, estatusHab FROM RESERVA
+JOIN HUESPED using (claveHuesped)
+JOIN Habitacion using (noHab)
+
+
+CREATE OR REPLACE TRIGGER tgReservacionCancelada
+INSTEAD OF DELETE ON vwReserva --Opera en la vista
+FOR EACH ROW
+BEGIN
+	UPDATE RESERVA SET status = 'DISPONIBLE'
+	WHERE noHab = :OLD.numFact
+    AND clvAlo = :OLD.clvAlo;
+END tgReservacionCancelada;
+/

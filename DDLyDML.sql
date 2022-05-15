@@ -20,11 +20,26 @@ CREATE TABLE personal(
     fechaIngreso DATE DEFAULT SYSDATE,
     RFCPer CHAR(13) NOT NULL,
     clvAlo CHAR(4) NOT NULL,
-
-    CONSTRAINT personal_pk PRIMARY KEY (clavePersonal),
-    CONSTRAINT personal_fk FOREIGN KEY (clvAlo) 
-    REFERENCES alojamiento (clvAlo) ON DELETE CASCADE
+    CONSTRAINT personal_pk PRIMARY KEY (clavePersonal)
 );
+
+--Tabla Alojamiento Dani
+
+CREATE TABLE Alojamiento(
+    clvAlo CHAR(4) NOT NULL,
+    nomAlo VARCHAR(30) NOT NULL,
+    calleAlo VARCHAR(30) NOT NULL,
+    CPAlo NUMBER(4) NOT NULL,
+    paisAlo VARCHAR(20) NOT NULL,
+    cantidadHab NUMBER(2) NOT NULL,
+    telAlo NUMBER(10) NOT NULL,
+    clavePersonal CHAR(4) NOT NULL,
+    CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
+    CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
+);
+
+ALTER TABLE personal
+ADD CONSTRAINT personal_fk FOREIGN KEY (clvAlo) REFERENCES alojamiento;
 
 --Tabla Huesped Aldo
 CREATE TABLE Huesped(
@@ -36,8 +51,8 @@ CREATE TABLE Huesped(
     CPHues NUMBER(5) NOT NULL,
     paisHues VARCHAR2(20) NOT NULL,
     telHues NUMBER(10) NOT NULL,
-    CONSTRAINT PK_Huesped PRIMARY KEY (claveHuesped),
-)
+    CONSTRAINT PK_Huesped PRIMARY KEY (claveHuesped)
+);
 
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('x998', 'Loren', 'Pidcock', '8564 Fremont Alley', 77163, 'China', '4202764245');
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('o352', 'Teddy', 'Sandham', '2 Melvin Circle', 34773, 'Russia', '2181887567');
@@ -90,22 +105,6 @@ insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('e909', 'Fonsie', 'Leythley', '8572 Killdeer Pass', 98727, 'China', '8417885767');
 insert into Huesped (claveHuesped, apPatHuesped, apMatHuesped, calleHues, CPHues, paisHues, telHues) values ('x551', 'Oneida', 'Glentworth', '78 Homewood Alley', 51001, 'China', '9277560167');
 
-
---Tabla Alojamiento Dani
-
-CREATE TABLE Alojamiento(
-    clvAlo CHAR(4) NOT NULL,
-    nomAlo VARCHAR(30) NOT NULL,
-    calleAlo VARCHAR(30) NOT NULL,
-    CPAlo NUMBER(4) NOT NULL,
-    paisAlo VARCHAR(20) NOT NULL,
-    cantidadHab NUMBER(2) NOT NULL,
-    telAlo NUMBER(10) NOT NULL,
-    clavePersonal CHAR(4) NOT NULL,
-    CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
-    CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
-);
-
 -- Tabla tipoHabitacion
 CREATE TABLE tipoHabitacion (
     tipoHab VARCHAR(15),
@@ -140,14 +139,13 @@ CREATE TABLE Actividad(
 CREATE TABLE AlojaAct(
 	clvAlo CHAR(4),
 	clvAct CHAR(4), 
-	fechaActividad VARCHAR2(20) NOT NULL,
-	horario VARCHAR2(10) NOT NULL,
-
-	CONSTRAINT pkAlojaAct PRIMARY KEY(clvAlo, clvAct),
+	fechaActividad VARCHAR(20) NOT NULL,
+	horario VARCHAR(10) NOT NULL,
+	CONSTRAINT pkAlojaAct PRIMARY KEY(clvAlo,clvAct),
 	CONSTRAINT fkAlojaActAlojamiento FOREIGN KEY(clvAlo)
 	REFERENCES alojamiento(clvAlo) ON DELETE CASCADE,
 	CONSTRAINT fkAlojaActActividad FOREIGN KEY(clvAct)
-	REFERENCES actividad(clvAct) ON SET NULL
+	REFERENCES actividad(clvAct) ON DELETE SET NULL,
 	CONSTRAINT ckAlojaAct CHECK(fechaActividad IN ('Martes',
 	'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'))
 );
@@ -160,7 +158,9 @@ CREATE TABLE Reserva(
     inicioReserva DATE,
     finReserva DATE,
     CONSTRAINT PK_Reserva PRIMARY KEY (noHab, clvAlo, claveHuesped),
-    CONSTRAINT FK_Reserva_Alojamiento FOREIGN KEY (clvAlo) REFERENCES alojamiento,
     CONSTRAINT FK_Reserva_Huesped FOREIGN KEY (claveHuesped) REFERENCES Huesped ON DELETE SET NULL,
-    CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab) REFERENCES Habitacion
+    CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab,clvAlo) REFERENCES Habitacion
 );
+
+
+

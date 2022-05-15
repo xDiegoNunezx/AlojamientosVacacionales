@@ -12,12 +12,46 @@ Equipo:
     que se realizan, el nivel de dificultad de éstas y el precio.
 */
 
+CREATE OR REPLACE VIEW vwAlojamientos
+AS
+    SELECT nomAlo AS Alojamiento, calleAlo, CPAlo, paisAlo, nomAct, nivelAct
+    FROM AlojaAct
+    NATURAL JOIN (alojamiento)
+    NATURAL JOIN (actividad);
 
 /*
     Modificar el precio de las habitaciones del alojamiento dependiendo 
     del tipo de habitación y un porcentaje proporcionado.
 */
 
+SET SERVEROUTPUT ON;
+
+CREATE OR REPLACE PROCEDURE spCambioPrecioHab(
+    vPorcentaje IN NUMBER
+)
+IS
+    CURSOR cursorHabs
+    IS
+        SELECT *
+        FROM tipoHabitacion;
+BEGIN
+    FOR HabActual IN cursorHabs LOOP
+
+        IF HabActual.tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE') THEN 
+            HabActual.precioHab:= HabActual.precioHab*(1+(vPorcentaje/100));
+
+            UPDATE tipoHabitacion
+            SET precioHab = HabActual.precioHab
+            WHERE tipoHab = HabActual.tipoHab;
+            
+            DBMS_OUTPUT.PUT_LINE('Precio de la habitacion '||HabActual.tipoHab||' aumentado un '||vPorcentaje||' %');
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('No se cambio el precio de la habitacion tipo '||HabActual.tipoHab);
+        END IF;
+    END LOOP;
+
+END spCambioPrecioHab;
+/
 
 /*
     Mostrar por cada alojamiento las actividades que se realizan y en 

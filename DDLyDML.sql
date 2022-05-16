@@ -8,7 +8,8 @@ Equipo:
 */
 
 -- CREACION DE TABLAS
--- Tabla Personal Diego
+
+-- Tabla Personal
 CREATE TABLE personal(
     clavePersonal CHAR(4),
     nomPer VARCHAR2(30) NOT NULL,
@@ -23,7 +24,7 @@ CREATE TABLE personal(
     CONSTRAINT personal_pk PRIMARY KEY (clavePersonal)
 );
 
---Tabla Alojamiento Dani
+--Tabla Alojamiento
 
 CREATE TABLE Alojamiento(
     clvAlo CHAR(4),
@@ -37,6 +38,8 @@ CREATE TABLE Alojamiento(
     CONSTRAINT PK_Alojamiento PRIMARY KEY (clvAlo),
     CONSTRAINT FK_Alojamiento_Personal FOREIGN KEY (clavePersonal) REFERENCES personal ON DELETE SET NULL
 );
+
+-- Modificacion para aniadir FK de alojamiento en personal
 
 ALTER TABLE personal
 ADD CONSTRAINT personal_fk 
@@ -65,7 +68,7 @@ CREATE TABLE tipoHabitacion (
     CONSTRAINT CK_tipoHab CHECK (tipoHab IN ('INDIVIDUAL','DOBLE','TRIPLE'))
 );
 
---Tabla Habitación Dani
+--Tabla Habitación
 
 CREATE TABLE Habitacion(
     noHab CHAR(4) NOT NULL,
@@ -78,6 +81,8 @@ CREATE TABLE Habitacion(
     CONSTRAINT CK_Habitacion_EstatusHab CHECK (estatusHab IN ('DISPONIBLE','OCUPADO'))
 );
 
+-- Tabla Actividad
+
 CREATE TABLE Actividad(
     clvAct CHAR(4) NOT NULL,
     nomAct VARCHAR(30) NOT NULL,
@@ -87,7 +92,7 @@ CREATE TABLE Actividad(
     CONSTRAINT CK_NivelAct CHECK (nivelAct IN ('ALTO','MEDIO','BAJO'))
 );
 
---Tabla ALOJAACT
+-- Tabla ALOJAACT
 CREATE TABLE AlojaAct(
 	clvAlo CHAR(4),
 	clvAct CHAR(4), 
@@ -98,11 +103,11 @@ CREATE TABLE AlojaAct(
 	REFERENCES alojamiento(clvAlo) ON DELETE CASCADE,
 	CONSTRAINT fkAlojaActActividad FOREIGN KEY(clvAct)
 	REFERENCES actividad(clvAct) ON DELETE SET NULL,
-	CONSTRAINT ckAlojaAct CHECK(fechaActividad IN ('Martes',
-	'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'))
+	CONSTRAINT ckAlojaAct CHECK(fechaActividad IN ('MARTES',
+	'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'))
 );
 
---Tabla Reserva Aldo
+-- Tabla Reserva
 CREATE TABLE Reserva(
     noHab CHAR(4),
     clvAlo CHAR(4),
@@ -113,6 +118,3 @@ CREATE TABLE Reserva(
     CONSTRAINT FK_Reserva_Huesped FOREIGN KEY (claveHuesped) REFERENCES Huesped ON DELETE SET NULL,
     CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab,clvAlo) REFERENCES Habitacion
 );
-
-
-

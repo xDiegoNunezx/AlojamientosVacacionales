@@ -78,6 +78,7 @@ CREATE TABLE Habitacion(
     CONSTRAINT CK_Habitacion_EstatusHab CHECK (estatusHab IN ('DISPONIBLE','OCUPADO'))
 );
 
+--Tabla Actividad
 CREATE TABLE Actividad(
     clvAct CHAR(4) NOT NULL,
     nomAct VARCHAR(30) NOT NULL,
@@ -113,6 +114,3 @@ CREATE TABLE Reserva(
     CONSTRAINT FK_Reserva_Huesped FOREIGN KEY (claveHuesped) REFERENCES Huesped ON DELETE SET NULL,
     CONSTRAINT FK_Reserva_Habitacion FOREIGN KEY (noHab,clvAlo) REFERENCES Habitacion
 );
-
-
-

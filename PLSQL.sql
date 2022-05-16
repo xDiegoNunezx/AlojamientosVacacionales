@@ -133,6 +133,27 @@ CREATE TABLE reporteReservaciones(
 	inicioReservaReporte DATE
 );
 
+CREATE OR REPLACE PROCEDURE spMostrarReservaciones(
+vFecha IN DATE)
+IS
+	CURSOR mostrar 
+	IS 
+		SELECT * FROM reporteReservaciones
+		WHERE inicioReservaReporte = vFecha;
+	vAuxiliar reporteReservaciones%ROWTYPE;
+BEGIN
+	OPEN mostrar;
+	FETCH mostrar INTO vAuxiliar;
+	WHILE mostrar%FOUND LOOP
+		DBMS_OUTPUT.PUT_LINE(vAuxiliar.noHabReporte||'      '||vAuxiliar.clvAloReporte||'      '||
+		vAuxiliar.claveHuespedReporte||'      '||vAuxiliar.nomHuesReporte||'      '||
+		vAuxiliar.nomAloReporte||'      '||vAuxiliar.inicioReservaReporte);
+		FETCH mostrar INTO vAuxiliar;
+	END LOOP;
+	CLOSE mostrar;
+END spMostrarReservaciones;
+/
+
 /*
     6.- En el momento en que una reservación es cancelada el estatus de la 
     habitación debe de regresar a su estado original.

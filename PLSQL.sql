@@ -1,5 +1,5 @@
 /*
-Proyecto 2. Alojamientos Vacacionales
+Proyecto: Alojamientos Vacacionales
 Equipo:
 - Aldo Yael NAVARRETE ZAMORA
 - Daniel Eduardo JARQUIN LÓPEZ
@@ -7,8 +7,15 @@ Equipo:
 - Uriel Quetzal TAVERA MARTÍNEZ
 */
 
+-- ************** PL / SQL ***************
+
+SET SERVEROUTPUT ON;
+SET LINE 220;
+
+-- PROGRAMACION DE LOS PUNTOS REQUERIDOS
+
 /*
-    Mostrar los alojamientos que se tienen, ubicación, actividades 
+    1.- Mostrar los alojamientos que se tienen, ubicación, actividades 
     que se realizan, el nivel de dificultad de éstas y el precio.
 */
 
@@ -20,11 +27,9 @@ AS
     NATURAL JOIN (actividad);
 
 /*
-    Modificar el precio de las habitaciones del alojamiento dependiendo 
+    2.- Modificar el precio de las habitaciones del alojamiento dependiendo 
     del tipo de habitación y un porcentaje proporcionado.
 */
-
-SET SERVEROUTPUT ON;
 
 CREATE OR REPLACE PROCEDURE spCambioPrecioHab(
     vPorcentaje IN NUMBER
@@ -54,7 +59,7 @@ END spCambioPrecioHab;
 /
 
 /*
-    Mostrar por cada alojamiento las actividades que se realizan y en 
+    3.- Mostrar por cada alojamiento las actividades que se realizan y en 
     qué día de la semana.
 */
 
@@ -67,7 +72,7 @@ AS
 	ORDER BY clvAlo;
 
 /*
-    Calcular las vacaciones del personal para un año determinado 
+    4.- Calcular las vacaciones del personal para un año determinado 
     y almacenarlo en una tabla llamada VACACIONES, la cual tendrá 
     únicamente la clave del empleado y los días de vacaciones que 
     le corresponden. Las vacaciones serán calculadas con base en 
@@ -114,7 +119,7 @@ END spVacaciones;
 exec spVacaciones;
 
 /*
-    Guardar en una tabla llamada reporteReservaciones, las reservaciones 
+    5.- Guardar en una tabla llamada reporteReservaciones, las reservaciones 
     realizadas en una fecha proporcionada, mostrando los nombres de los 
     huéspedes y los alojamientos.
 */
@@ -129,7 +134,7 @@ CREATE TABLE reporteReservaciones(
 );
 
 /*
-    En el momento en que una reservación es cancelada el estatus de la 
+    6.- En el momento en que una reservación es cancelada el estatus de la 
     habitación debe de regresar a su estado original.
 */
 CREATE OR REPLACE VIEW vwReserva
@@ -231,12 +236,10 @@ BEGIN
     WHERE clavePersonal = vclvPersonal;
 END;
 /
---Diego, Sur
-EXEC spAsignaPersonalAlo('13','1'); 
---Quetzal, Oriente
-EXEC spAsignaPersonalAlo('14','3'); 
---Dani, Norte
-EXEC spAsignaPersonalAlo('11','2'); 
+
+EXEC spAsignaPersonalAlo('4','1'); 
+EXEC spAsignaPersonalAlo('2','2');
+EXEC spAsignaPersonalAlo('5','3'); 
 
 /*  
     PROCEDIMIENTO para Dar de Alta a Huesped
@@ -359,17 +362,16 @@ BEGIN
 END;
 /
 
-EXEC spAltaAlojaAct(1,3,'Martes','11am-6pm');
-EXEC spAltaAlojaAct(1,1,'Jueves','8am-2pm');
-EXEC spAltaAlojaAct(2,2,'Miercoles','1pm-7pm');
-EXEC spAltaAlojaAct(2,5,'Jueves','10am-6pm');
-EXEC spAltaAlojaAct(3,4,'Viernes','6pm-9pm');
-EXEC spAltaAlojaAct(3,3,'Miercoles','6pm-9pm');
+EXEC spAltaAlojaAct(1,3,'MARTES','11am-6pm');
+EXEC spAltaAlojaAct(1,1,'JUEVES','8am-2pm');
+EXEC spAltaAlojaAct(2,2,'MIERCOLES','1pm-7pm');
+EXEC spAltaAlojaAct(2,5,'JUEVES','10am-6pm');
+EXEC spAltaAlojaAct(3,4,'VIERNES','6pm-9pm');
+EXEC spAltaAlojaAct(3,3,'MIERCOLES','6pm-9pm');
 
 /*
     PROCEDIMIENTO para Hacer una Reserva 
 */
-SET SERVEROUTPUT ON;
 
 /* 
     DISPARADOR de Sustitución cuando se hace una reserva se cambia el status
@@ -440,7 +442,30 @@ BEGIN
 END spCreaReserva;
 /
 
-exec spCreaReserva('1','2','1',SYSDATE,SYSDATE+7);
+/*
+    PROCEDIMIENTO para mostrar reservaciones
+*/
+
+CREATE OR REPLACE PROCEDURE spMostrarReservaciones(
+vFecha IN DATE)
+IS
+	CURSOR mostrar 
+	IS 
+		SELECT * FROM reporteReservaciones
+		WHERE inicioReservaReporte = vFecha;
+	vAuxiliar reporteReservaciones%ROWTYPE;
+BEGIN
+	OPEN mostrar;
+	FETCH mostrar INTO vAuxiliar;
+	WHILE mostrar%FOUND LOOP
+		DBMS_OUTPUT.PUT_LINE(vAuxiliar.noHabReporte||'      '||vAuxiliar.clvAloReporte||'      '||
+		vAuxiliar.claveHuespedReporte||'      '||vAuxiliar.nomHuesReporte||'      '||
+		vAuxiliar.nomAloReporte||'      '||vAuxiliar.inicioReservaReporte);
+		FETCH mostrar INTO vAuxiliar;
+	END LOOP;
+	CLOSE mostrar;
+END spMostrarReservaciones;
+/
 
 /*
     PROCEDIMIENTO para Cancelar una Reserva 
@@ -460,7 +485,63 @@ BEGIN
 END;
 /
 
-exec spCancelaReserva('1','2','1');
+-- PRUEBA DE LOS PUNTOS REQUERIDOS
+
+/*
+    1.- Mostrar los alojamientos que se tienen, ubicación, actividades 
+    que se realizan, el nivel de dificultad de éstas y el precio.
+*/
+
+SELECT * FROM vwAlojamientos;
+
+/*
+    2.- Modificar el precio de las habitaciones del alojamiento dependiendo 
+    del tipo de habitación y un porcentaje proporcionado.
+*/
+
+SELECT * FROM tipoHabitacion;
+-- Aumento de precio del 10%
+EXEC spCambioPrecioHab(10);
+SELECT * FROM tipoHabitacion;
+
+/*
+    3.- Mostrar por cada alojamiento las actividades que se realizan y en 
+    qué día de la semana.
+*/
+
+SELECT * FROM vwActividadAlojamiento;
+
+/*
+    4.- Calcular las vacaciones del personal para un año determinado 
+    y almacenarlo en una tabla llamada VACACIONES, la cual tendrá 
+    únicamente la clave del empleado y los días de vacaciones que 
+    le corresponden. Las vacaciones serán calculadas con base en 
+    el año en el que ingresaron los empleados, se les darán 8 días 
+    al inicio y 2 días adicionales por año laborado.
+*/
+
+SELECT nomPer,fechaIngreso FROM personal;
+EXEC spVacaciones;
+SELECT * from vacaciones;
+
+/*
+    5.- Guardar en una tabla llamada reporteReservaciones, las reservaciones 
+    realizadas en una fecha proporcionada, mostrando los nombres de los 
+    huéspedes y los alojamientos.
+*/
+
+EXEC spCreaReserva('1','2','1',SYSDATE,SYSDATE+7);
+SELECT * FROM reporteReservaciones;
+SELECT * FROM habitacion;
+
+/*
+    6.- En el momento en que una reservación es cancelada el estatus de la 
+    habitación debe de regresar a su estado original.
+*/
+
+EXEC spCancelaReserva('1','2','1');
+SELECT * FROM habitacion;
+
 
 --- ************** TRIGGERS *****************
 

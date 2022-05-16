@@ -1,5 +1,5 @@
 /*
-Proyecto 2. Alojamientos Vacacionales
+Proyecto: Alojamientos Vacacionales
 Equipo:
 - Aldo Yael NAVARRETE ZAMORA
 - Daniel Eduardo JARQUIN LÓPEZ

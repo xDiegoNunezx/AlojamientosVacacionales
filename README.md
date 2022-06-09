@@ -1,12 +1,5 @@
-# ProyectoBD
-TODO:
-* Tabla Personal
-* Tabla Reserva
-* Tabla Huesped
-* Tabla Habitación
-* Tabla Alojamiento
-* Tabla AlojaAct
-* Tabla Actividad
+# Alojamientos Vacacionales
+Base de datos para alojamientos vacacionales. 
 
 # Links
 <ul>
